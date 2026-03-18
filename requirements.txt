@@ -1,0 +1,6 @@
+langchain
+langchain-google-vertexai
+langgraph
+langfuse
+pyyaml
+rms @ git+https://github.com/benthomasson/rms
