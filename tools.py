@@ -121,84 +121,84 @@ BASE_TOOLS = [read_file, write_file, edit_file, grep, glob_files, run_command]
 # --- RMS tools ---
 
 try:
-    from rms_lib import api as rms_api
-    _RMS_AVAILABLE = True
+    from reasons_lib import api as reasons_api
+    _REASONS_AVAILABLE = True
 except ImportError:
-    _RMS_AVAILABLE = False
+    _REASONS_AVAILABLE = False
 
 
 @tool
-def rms_status(db_path: str = "rms.db") -> str:
+def reasons_status(db_path: str = "rms.db") -> str:
     """Show all beliefs in the RMS network with truth values (IN or OUT)."""
-    return json.dumps(rms_api.get_status(db_path=db_path), indent=2)
+    return json.dumps(reasons_api.get_status(db_path=db_path), indent=2)
 
 
 @tool
-def rms_add(node_id: str, text: str, sl: str = "", unless: str = "",
+def reasons_add(node_id: str, text: str, sl: str = "", unless: str = "",
             label: str = "", source: str = "", db_path: str = "rms.db") -> str:
     """Add a belief to the RMS network. Use sl for dependencies, unless for outlist."""
-    return json.dumps(rms_api.add_node(node_id, text, sl=sl, unless=unless,
+    return json.dumps(reasons_api.add_node(node_id, text, sl=sl, unless=unless,
                                         label=label, source=source, db_path=db_path))
 
 
 @tool
-def rms_retract(node_id: str, db_path: str = "rms.db") -> str:
+def reasons_retract(node_id: str, db_path: str = "rms.db") -> str:
     """Retract a belief and cascade to all dependents."""
-    return json.dumps(rms_api.retract_node(node_id, db_path=db_path))
+    return json.dumps(reasons_api.retract_node(node_id, db_path=db_path))
 
 
 @tool
-def rms_assert(node_id: str, db_path: str = "rms.db") -> str:
+def reasons_assert(node_id: str, db_path: str = "rms.db") -> str:
     """Assert a belief (mark IN) and cascade restoration."""
-    return json.dumps(rms_api.assert_node(node_id, db_path=db_path))
+    return json.dumps(reasons_api.assert_node(node_id, db_path=db_path))
 
 
 @tool
-def rms_explain(node_id: str, db_path: str = "rms.db") -> str:
+def reasons_explain(node_id: str, db_path: str = "rms.db") -> str:
     """Explain why a belief is IN or OUT by tracing its justification chain."""
-    return json.dumps(rms_api.explain_node(node_id, db_path=db_path), indent=2)
+    return json.dumps(reasons_api.explain_node(node_id, db_path=db_path), indent=2)
 
 
 @tool
-def rms_search(query: str, db_path: str = "rms.db") -> str:
+def reasons_search(query: str, db_path: str = "rms.db") -> str:
     """Search beliefs by text or ID (case-insensitive)."""
-    return json.dumps(rms_api.search(query, db_path=db_path), indent=2)
+    return json.dumps(reasons_api.search(query, db_path=db_path), indent=2)
 
 
 @tool
-def rms_trace(node_id: str, db_path: str = "rms.db") -> str:
+def reasons_trace(node_id: str, db_path: str = "rms.db") -> str:
     """Trace backward to find all premises a belief rests on."""
-    return json.dumps(rms_api.trace_assumptions(node_id, db_path=db_path))
+    return json.dumps(reasons_api.trace_assumptions(node_id, db_path=db_path))
 
 
 @tool
-def rms_challenge(target_id: str, reason: str, db_path: str = "rms.db") -> str:
+def reasons_challenge(target_id: str, reason: str, db_path: str = "rms.db") -> str:
     """Challenge a belief. Creates a challenge node and the target goes OUT."""
-    return json.dumps(rms_api.challenge(target_id, reason, db_path=db_path))
+    return json.dumps(reasons_api.challenge(target_id, reason, db_path=db_path))
 
 
 @tool
-def rms_defend(target_id: str, challenge_id: str, reason: str,
+def reasons_defend(target_id: str, challenge_id: str, reason: str,
                db_path: str = "rms.db") -> str:
     """Defend a belief against a challenge. Neutralises the challenge, target restored."""
-    return json.dumps(rms_api.defend(target_id, challenge_id, reason, db_path=db_path))
+    return json.dumps(reasons_api.defend(target_id, challenge_id, reason, db_path=db_path))
 
 
 @tool
-def rms_nogood(node_ids: list[str], db_path: str = "rms.db") -> str:
+def reasons_nogood(node_ids: list[str], db_path: str = "rms.db") -> str:
     """Record a contradiction. Uses backtracking to retract the responsible premise."""
-    return json.dumps(rms_api.add_nogood(node_ids, db_path=db_path))
+    return json.dumps(reasons_api.add_nogood(node_ids, db_path=db_path))
 
 
 @tool
-def rms_compact(budget: int = 500, db_path: str = "rms.db") -> str:
+def reasons_compact(budget: int = 500, db_path: str = "rms.db") -> str:
     """Token-budgeted summary of the belief network."""
-    return rms_api.compact(budget=budget, db_path=db_path)
+    return reasons_api.compact(budget=budget, db_path=db_path)
 
 
-RMS_TOOLS = [
+REASONS_TOOLS = [
     rms_status, rms_add, rms_retract, rms_assert, rms_explain,
     rms_search, rms_trace, rms_challenge, rms_defend, rms_nogood, rms_compact,
 ]
 
-ALL_TOOLS = BASE_TOOLS + (RMS_TOOLS if _RMS_AVAILABLE else [])
+ALL_TOOLS = BASE_TOOLS + (REASONS_TOOLS if _REASONS_AVAILABLE else [])
